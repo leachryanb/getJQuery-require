@@ -13,7 +13,7 @@
   config1 = {
     context: 'test1',
     config: {
-      'getjquery_test': {
+      'tests': {
         name: 'test1'
       }
     }
@@ -22,7 +22,7 @@
   config2 = {
     context: 'test2',
     config: {
-      'getjquery_test': {
+      'tests': {
         name: 'test2'
       }
     }
@@ -31,7 +31,7 @@
   $.extend(config1, baseContext);
   $.extend(config2, baseContext);
 
-  require(config1, ['getjquery_test']);
-  require(config2, ['getjquery_test']);
+  require(config1, ['tests']);
+  require(config2, ['tests']);
 
 })(jQuery);
