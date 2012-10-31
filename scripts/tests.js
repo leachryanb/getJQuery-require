@@ -3,8 +3,8 @@
   define([
     'module',
     'getJQuery!1.7.1[plugin-1.7.1.jquery]',
-    'getJQuery!1.8.2[plugin-1.8.2.jquery, lib/jquery-ui-1.9.0.custom]'/*,
-    'getJQuery!1.8.2[plugin-global.jquery]'*/ // FAILS
+    'getJQuery!1.8.2[plugin-1.8.2.jquery, lib/jquery-ui-1.9.0.custom]',
+    'getJQuery!1.8.2[plugin-global.jquery]' // FAILS
   ], function(module, $171, $182) {
 
     var assert, versionContent, ui190Vers = null, uiVers = null;
@@ -61,8 +61,7 @@
       $182(content_182).plugin182().appendTo(body);
       $182('<div/>').progressbar({ value: 20 }).appendTo(body);
 
-      // FAILS
-      // $182(content_global).pluginGlobal().appendTo(body);
+      $182(content_global).pluginGlobal().appendTo(body);
 
     });
 

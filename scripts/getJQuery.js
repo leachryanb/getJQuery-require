@@ -4,29 +4,24 @@ define(function() {
    * A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
    */
 
-  var errorMsg, loadPlugins, pluginModuleName;
+  var versionedPlugins = {}, versionPlugins, errorMsg, loadPlugins;
 
   errorMsg = function(version) {
     return "jquery-" + version + " could not be loaded. getJQuery! loader expects a semantic version number";
   };
 
-  pluginModuleName = function(plugin) {
-    plugin = plugin.trim();
-    return "text!" + plugin + ".js";
+  versionPlugins = function(plugins, name) {
+    var i, len;
+    if (!versionedPlugins[name]) {
+      versionedPlugins[name] = [];
+    }
+    for (i = 0, len = plugins.length; i < len; i++) {
+      versionedPlugins[name].push("text!" + plugins[i].trim() + ".js");
+    }
   };
 
   loadPlugins = function(req, $, plugins, load) {
-    var jQuery, plugin;
-    jQuery = $;
-    plugins = (function() {
-      var i, len, results = [];
-      for (i = 0, len = plugins.length; i < len; i++) {
-        plugin = plugins[i];
-        results.push(pluginModuleName(plugin));
-      }
-      return results;
-    })();
-
+    var jQuery = $;
     req(plugins, function() {
       var i, len, pluginText;
       for (i = 0, len = arguments.length; i < len; i++) {
@@ -35,24 +30,39 @@ define(function() {
       }
       load($);
     });
+    plugins = [];
   };
 
   return {
 
-    load: function(name, req, load, config) {
-      var plgnRe, segs, version;
+    normalize: function(name, normalize) {
+      var plgnRe, segs, version, plugins = [];
+
       plgnRe = /^([0-9]*\.[0-9]*\.[0-9]*)(\[(.+?)\])?$/ig;
       segs = plgnRe.exec(name);
-      version = segs[1];
 
+      if (!segs) {
+        return normalize(name);
+      }
+
+      version = segs[1];
       if (isNaN(parseFloat(version))) {
         throw errorMsg(version);
       }
 
-      req(["jquery-" + version], function() {
+      name = "jquery-" + version
+
+      if (segs[3]) {
+        versionPlugins(segs[3].split(','), name);
+      }
+      return normalize(name);
+    },
+
+    load: function(name, req, load, config) {
+      req([name], function() {
         var $L = jQuery.noConflict(true).sub();
-        if (segs[3]) {
-          return loadPlugins(req, $L, segs[3].split(','), load);
+        if (versionedPlugins[name] && versionedPlugins[name].length) {
+          return loadPlugins(req, $L, versionedPlugins[name], load);
         } else {
           return load($L);
         }
