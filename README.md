@@ -11,7 +11,7 @@ RequireJS loader plugin for returning an isolated version of jQuery with associa
   - Load plugins onto the fn of my specific jQuery version
   - Have referential integrity on a required jQuery version such that any module within my require context can share plugins 
 
-## Basic Usage
+## Basic Usage:
 ``` JavaScript
 define([
   'getJQuery!1.8.2[plugin1.jquery.js, plugin2.jquery.js]'
@@ -23,7 +23,7 @@ define([
 });
 ```
 
-## More Advanced Usage
+## More Advanced Usage:
 ``` JavaScript
 define([
   'getJQuery!1.7.1[plugin-1.7.1.jquery]',
