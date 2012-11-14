@@ -15,6 +15,9 @@
     config: {
       'tests': {
         name: 'test1'
+      },
+      'tests2': {
+        name: 'test1_1'
       }
     }
   };
@@ -24,6 +27,9 @@
     config: {
       'tests': {
         name: 'test2'
+      },
+      'tests2': {
+        name: 'test2_2'
       }
     }
   };

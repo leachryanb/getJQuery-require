@@ -1,10 +1,9 @@
 (($) ->
   define [
-    "module"
-    "getJQuery!1.7.1[plugin-1.7.1.jquery]"
-    "getJQuery!1.8.2[plugin-1.8.2.jquery, lib/jquery-ui-1.9.0.custom]"
+    "module",
+    "getJQuery!1.7.1[plugin-1.7.1.jquery]",
+    "getJQuery!1.8.2[plugin-1.8.2.jquery, lib/jquery-ui-1.9.0.custom]",
     "getJQuery!1.8.2[plugin-global.jquery, plugin-1.8.2.jquery, lib/jquery-ui-1.9.0.custom]"
-    "tests2"
   ], (module, $171, $182, $182_2) ->
 
     assert = ($ns, name, assertVal, scope) ->

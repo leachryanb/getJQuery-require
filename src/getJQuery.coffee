@@ -1,53 +1,51 @@
-define ->
+define [
+], ()->
   #
   #   * Expects:
   #   * A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
   #
-  versionedPlugins = {}
+
+  Dollar = (@$, @plugins = [])->
+
   errorMsg = (version) ->
     "jquery-#{version} could not be loaded. getJQuery! loader expects a semantic version number"
 
-  storePlugins = (plugins, name) ->
-    versionedPlugins[name] = []  unless versionedPlugins[name]
-    i = 0
-    len = plugins.length
-
-    while i < len
-      versionedPlugins[name].push "text!#{plugins[i].trim()}.js"
-      i++
-
-  loadPlugins = (req, $, plugins, load) ->
-    jQuery = $
+  loadPlugins = (plugins, the$, req, onLoad)->
+    jQuery = $ = the$
     req plugins, ->
-      i = 0
-      len = arguments.length
-
-      while i < len
+      for i in [0..arguments.length-1]
         pluginText = arguments[i]
         eval pluginText
-        i++
-      load $
+      onLoad? the$
 
-    plugins = []
+  load: (name, req, onLoad, config) ->
+    if config.isBuild
+      onLoad()
+    else
+      config.dollars ?= {}
+      versionRe = /([0-9]*\.[0-9]*\.[0-9]*)/g
+      pluginRe = /\[([^\]]*)\]/
 
-  normalize: (name, normalize) ->
-    plugins = []
-    plgnRe = /^([0-9]*\.[0-9]*\.[0-9]*)(\[(.+?)\])?$/g
-    segs = plgnRe.exec(name)
+      try
+        version = name.match(versionRe)[0]
+      catch e
+        throw errorMsg(name)
 
-    return normalize(name)  unless segs
+      plugins = if pluginRe.exec(name) then pluginRe.exec(name)[1].split(',') else []
 
-    version = segs[1]
-    throw errorMsg(version)  if isNaN(parseFloat(version))
+      name = "jquery-#{version}"
+      config.shim ?= {}
+      config.shim[name] =
+        exports: '$'
+        init: ->
+          window.$.noConflict(true).sub()
 
-    name = "jquery-" + version
-    storePlugins segs[3].split(","), name  if segs[3]
-    normalize name
-
-  load: (name, req, load, config) ->
-    req [name], ->
-      $L = jQuery.noConflict(true).sub()
-      if versionedPlugins[name] and versionedPlugins[name].length
-        loadPlugins req, $L, versionedPlugins[name], load
+      dollar = new Dollar null, plugins
+      if plugins.length
+        plugins = ("text!#{plugin.trim()}.js" for plugin in plugins)
+        config.shim[plugin] = [name] for plugin in plugins
+        require config, [name], (the$)->
+          loadPlugins plugins, the$, req, onLoad
       else
-        load $L
+        require config, [name], (the$)->
+          onLoad the$
