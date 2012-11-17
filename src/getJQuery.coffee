@@ -1,11 +1,14 @@
-define [
-], ()->
-  #
-  #   * Expects:
-  #   * A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
-  #
+###
+  @License
+  Version: 0.1.0 (11/17/2012)
+  Author: Ryan Leach
+  Released under the MIT license
+###
 
-  Dollar = (@$, @plugins = [])->
+define ->
+  ###
+    Expects: A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
+  ###
 
   errorMsg = (version) ->
     "jquery-#{version} could not be loaded. getJQuery! loader expects a semantic version number"
@@ -22,7 +25,6 @@ define [
     if config.isBuild
       onLoad()
     else
-      config.dollars ?= {}
       versionRe = /([0-9]*\.[0-9]*\.[0-9]*)/g
       pluginRe = /\[([^\]]*)\]/
 
@@ -38,9 +40,11 @@ define [
       config.shim[name] =
         exports: '$'
         init: ->
-          window.$.noConflict(true).sub()
+          my$ = window.$.noConflict(true).sub()
+          my$._r_context = config.context
+          my$._r_contextId = new Date().getTime()
+          my$
 
-      dollar = new Dollar null, plugins
       if plugins.length
         plugins = ("text!#{plugin.trim()}.js" for plugin in plugins)
         config.shim[plugin] = [name] for plugin in plugins
