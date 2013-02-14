@@ -10,55 +10,35 @@
     };
     return {
       init: function(name) {
-        return describe("getJQuery! loader plugin for context: " + name, function() {
-          describe("On the window scope (" + $global.fn.jquery + ")", function() {
-            it('plugin171 should be undefined', function() {
-              return expect($global.fn["plugin171"]).toBeUndefined();
+        return describe("getJQuery! loader plugin for: " + name, function() {
+          describe('should load jQuery', function() {
+            it('$171 should be defined', function() {
+              return expect($171).toBeDefined();
             });
-            return it('plugin182 should be undefined', function() {
-              return expect($global.fn["plugin182"]).toBeUndefined();
+            it('$182 should be defined', function() {
+              return expect($182).toBeDefined();
             });
-          });
-          describe("On the locally scoped jQuery: $171 (" + $171.fn.jquery + ")", function() {
-            it("plugin171 should be defined", function() {
-              return expect($171.fn["plugin171"]).toBeDefined();
-            });
-            it("plugin182 should be undefined", function() {
-              return expect($171.fn["plugin182"]).toBeUndefined();
-            });
-            it("pluginGlobal should be undefined", function() {
-              return expect($171.fn["pluginGlobal"]).toBeUndefined();
-            });
-            return it("widget should be undefined", function() {
-              return expect($171.widget).toBeUndefined();
+            return it('$182_2 should be defined', function() {
+              return expect($182_2).toBeDefined();
             });
           });
-          describe("On the locally scoped jQuery: $182 (" + $182.fn.jquery + ")", function() {
-            it("plugin171 should be undefined", function() {
-              return expect($182.fn["plugin171"]).toBeUndefined();
+          describe('at the right version', function() {
+            it('$171 should be version 1.7.1', function() {
+              expect($171.fn).toBeDefined();
+              return expect($171.fn.jquery).toEqual('1.7.1');
             });
-            it("plugin182 should be defined", function() {
-              return expect($182.fn["plugin182"]).toBeDefined();
+            it('$182 should be version 1.8.2', function() {
+              expect($182.fn).toBeDefined();
+              return expect($182.fn.jquery).toEqual('1.8.2');
             });
-            it("pluginGlobal should be defined", function() {
-              return expect($182.fn["pluginGlobal"]).toBeDefined();
-            });
-            return it("widget should be defined", function() {
-              return expect($182.widget).toBeDefined();
+            return it('$182_2 should be version 1.8.2', function() {
+              expect($182_2.fn).toBeDefined();
+              return expect($182_2.fn.jquery).toEqual('1.8.2');
             });
           });
-          return describe("On the second locally scoped jQuery: $182_2 (" + $182_2.fn.jquery + ")", function() {
-            it("plugin171 should be undefined", function() {
-              return expect($182_2.fn["plugin171"]).toBeUndefined();
-            });
-            it("plugin182 should be defined", function() {
-              return expect($182_2.fn["plugin182"]).toBeDefined();
-            });
-            it("pluginGlobal should be defined", function() {
-              return expect($182_2.fn["pluginGlobal"]).toBeDefined();
-            });
-            return it("widget should be defined", function() {
-              return expect($182_2.widget).toBeDefined();
+          return describe('without affecting the global jQuery', function() {
+            return it('$global should be version 1.6.3', function() {
+              return expect($global.fn.jquery).toEqual('1.6.3');
             });
           });
         });

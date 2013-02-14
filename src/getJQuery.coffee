@@ -1,11 +1,15 @@
 ###
   @License
-  Version: 0.1.0 (11/17/2012)
+  Version: 0.1.1 (02/08/2013)
   Author: Ryan Leach
   Released under the MIT license
 ###
 
-define ->
+define [
+  'module'
+], (module)->
+
+  masterConfig = module.config?()
   ###
     Expects: A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
   ###
@@ -13,43 +17,108 @@ define ->
   errorMsg = (version) ->
     "jquery-#{version} could not be loaded. getJQuery! loader expects a semantic version number"
 
-  loadPlugins = (plugins, the$, req, onLoad)->
+  textifyPlugins = (plugins, req) ->
+    _plugins = []
+    for plugin in plugins
+      url = req.toUrl(plugin)
+      unless url.match(/^empty:/)
+        _plugins.push "text!#{plugin}.js"
+    _plugins
+
+  parsePlugins = (name) ->
+    pluginRe = /\[([^\]]*)\]/
+    plugins = (if pluginRe.exec(name) then pluginRe.exec(name)[1].split(",") else [])
+    (plugin.trim() for plugin in plugins)
+
+  parseVersion = (name) ->
+    versionRe = /([0-9]*\.[0-9]*\.[0-9]*)/g
+    try
+      return name.match(versionRe)[0]
+    catch e
+      throw errorMsg(name)
+
+  loadPlugins = (plugins, the$, req, onLoad, context)->
+
     jQuery = $ = the$
-    req plugins, ->
-      for i in [0..arguments.length-1]
-        pluginText = arguments[i]
-        eval pluginText
-      onLoad? the$
+    loadingContexts = []
+
+    completeCheck = (_context)->
+      loadingContexts.splice(loadingContexts.indexOf(_context), 1) if _context in loadingContexts
+
+      onLoad? the$ unless loadingContexts.length
+
+    loadPluginContext = (_req, _plugins, _context)->
+      return completeCheck _context unless _plugins.length
+      loadingContexts.push _context if _context
+
+      _plugins = textifyPlugins _plugins, _req
+
+      _req _plugins, ->
+        for i in [0..arguments.length-1]
+          pluginText = arguments[i]
+          eval pluginText
+        completeCheck _context
+        , (err)->
+          console.log err
+
+    if masterConfig.pluginContexts
+      for contextName, contextPlugins of masterConfig.pluginContexts
+        _req = requirejs context: contextName
+        _plugins = contextPlugins.filter((contextPlugin)->
+          match = contextPlugin in plugins
+          plugins.splice(plugins.indexOf(contextPlugin), 1) if match
+          match
+        )
+        loadPluginContext _req, _plugins, contextName
+
+      loadPluginContext req, plugins
+    else
+      loadPluginContext req, plugins
 
   load: (name, req, onLoad, config) ->
+
+    plugins = parsePlugins name
+
     if config.isBuild
-      onLoad()
+      if plugins.length
+        plugins = textifyPlugins plugins, req
+        req plugins, (content) ->
+          onLoad content
+      else
+        onLoad()
     else
-      versionRe = /([0-9]*\.[0-9]*\.[0-9]*)/g
-      pluginRe = /\[([^\]]*)\]/
-
-      try
-        version = name.match(versionRe)[0]
-      catch e
-        throw errorMsg(name)
-
-      plugins = if pluginRe.exec(name) then pluginRe.exec(name)[1].split(',') else []
-
+      version = parseVersion(name)
       name = "jquery-#{version}"
+
       config.shim ?= {}
       config.shim[name] =
         exports: '$'
         init: ->
-          my$ = window.$.noConflict(true).sub()
-          my$._r_context = config.context
-          my$._r_contextId = new Date().getTime()
-          my$
+          window.$.noConflict(true)
 
-      if plugins.length
-        plugins = ("text!#{plugin.trim()}.js" for plugin in plugins)
-        config.shim[plugin] = [name] for plugin in plugins
-        require config, [name], (the$)->
-          loadPlugins plugins, the$, req, onLoad
-      else
-        require config, [name], (the$)->
+      # try
+      #   # If the window jQuery is the correct version, skip the request, just sub it
+      #   _$ = if window.$.fn.jquery is version then window.$.noConflict(true).sub()
+      #   _$.fn.require_context = config.context
+      # catch ex
+
+
+      _req = requirejs config
+      if masterConfig.jQueryContext
+        _req = requirejs
+          context: masterConfig.jQueryContext
+          shim: config.shim
+
+        # if _$
+        #   loadPlugins plugins, _$, req, onLoad
+        # else
+      _req [name], (the$)->
+        console.log req.defined(name)
+        the$ = the$.sub() unless req.defined(name)
+        # console.log config.context, the$.name
+
+        if plugins.length
+          # pass in the original context require for the plugins
+          loadPlugins plugins, the$, req, onLoad, config.context
+        else
           onLoad the$
