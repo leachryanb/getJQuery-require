@@ -11,6 +11,9 @@ define(['module'], function(module) {
   var errorMsg, loadPlugins, masterConfig, parsePlugins, parseVersion, textifyPlugins;
 
   masterConfig = typeof module.config === "function" ? module.config() : void 0;
+  if (!masterConfig.jQueryContext) {
+    masterConfig.jQueryContext = "_";
+  }
   /*
     Expects: A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
   */

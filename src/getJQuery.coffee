@@ -10,6 +10,7 @@ define [
 ], (module)->
 
   masterConfig = module.config?()
+  masterConfig.jQueryContext = "_" unless masterConfig.jQueryContext
   ###
     Expects: A path config mapping 'jquery-n.n.n' to the appropriate jquery version file
   ###
