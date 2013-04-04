@@ -67,6 +67,7 @@ define [
         _req = requirejs context: contextName
         _plugins = contextPlugins.filter((contextPlugin)->
           match = contextPlugin in plugins
+          console.log contextPlugin
           plugins.splice(plugins.indexOf(contextPlugin), 1) if match
           match
         )

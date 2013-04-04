@@ -101,6 +101,7 @@ define(['module'], function(module) {
           var match;
 
           match = __indexOf.call(plugins, contextPlugin) >= 0;
+          console.log(contextPlugin);
           if (match) {
             plugins.splice(plugins.indexOf(contextPlugin), 1);
           }
