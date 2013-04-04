@@ -58,7 +58,7 @@ module.exports = (grunt) ->
         tasks: ['coffee', 'haml', 'jasmine::build']
 
     clean:
-      src: ['./getJQuery.js', 'spec', 'ref_app']
+      src: ['.grunt', '_SpecRunner.html', './getJQuery.js', 'spec', 'ref_app']
 
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
