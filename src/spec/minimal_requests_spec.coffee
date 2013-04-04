@@ -1,9 +1,9 @@
-define ['./minimal_requests'], ->
+define ['./minimal_requests'], (setup)->
   describe 'getJQuery! loader plugin network requests', ->
 
     beforeEach ->
       waitsFor ->
-        window.require_contexts_loaded
+        setup.ready()
 
     describe "when multiple contexts require getJQuery!1.7.1", ->
 

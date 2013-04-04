@@ -14,5 +14,4 @@ define [], ->
           context.require.undef moduleId if moduleId.indexOf(stub) >=0
 
 
-    window.require_contexts_loaded = false
 

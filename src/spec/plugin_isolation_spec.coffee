@@ -1,4 +1,4 @@
-define ['./plugin_isolation'], ->
+define ['./plugin_isolation'], (setup)->
   describe 'getJQuery! loader isolates jQuery plugins within a context', ->
 
     describe "on the window $(#{$.fn.jquery})", ->
@@ -18,7 +18,7 @@ define ['./plugin_isolation'], ->
 
       beforeEach ->
         waitsFor ->
-          window.require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: '_'
@@ -53,7 +53,7 @@ define ['./plugin_isolation'], ->
 
       beforeEach ->
         waitsFor ->
-          require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: 'context1'
@@ -89,7 +89,7 @@ define ['./plugin_isolation'], ->
 
       beforeEach ->
         waitsFor ->
-          require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: 'context2'

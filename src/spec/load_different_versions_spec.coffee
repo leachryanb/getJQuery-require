@@ -1,4 +1,4 @@
-define ['./load_different_versions'], ->
+define ['./load_different_versions'], (setup)->
 
   describe 'getJQuery! loader plugin allows loading different versions of jQuery per context', ->
 
@@ -15,7 +15,7 @@ define ['./load_different_versions'], ->
 
       beforeEach ->
         waitsFor ->
-          window.require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: '_'
@@ -36,7 +36,7 @@ define ['./load_different_versions'], ->
 
       beforeEach ->
         waitsFor ->
-          require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: 'context1'
@@ -58,7 +58,7 @@ define ['./load_different_versions'], ->
 
       beforeEach ->
         waitsFor ->
-          require_contexts_loaded
+          setup.ready()
 
         runs ->
           req = require.config context: 'context2'

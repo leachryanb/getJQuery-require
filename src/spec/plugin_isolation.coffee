@@ -28,8 +28,6 @@ define ['./require_reset'], (resetter)->
   require context1, ["spec/fixtures/module", "spec/fixtures/module_with_plugins"], -> c1 = true
   require context2, ["spec/fixtures/module", "spec/fixtures/module_with_plugins"], -> c2 = true
 
-  intrvl = setInterval ->
-    if c_ and c1 and c2
-      clearInterval intrvl
-      window.require_contexts_loaded = true
-  , 10
+  ready: ->
+    c_ and c1 and c2
+
