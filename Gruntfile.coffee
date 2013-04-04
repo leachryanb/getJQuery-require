@@ -68,5 +68,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-haml'
 
-  grunt.registerTask 'test', ['jasmine']
-  grunt.registerTask 'default', ['copy','test']
+  grunt.registerTask 'compile', ['clean', 'coffee', 'haml', 'jasmine::build']
+  grunt.registerTask 'test', ['compile','jasmine']
+  grunt.registerTask 'default', ['test']
