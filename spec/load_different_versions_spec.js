@@ -8,9 +8,9 @@ describe("getJQuery! loader plugin", function() {
     });
   });
   describe("For the default context", function() {
-    var $171, $182, $182_2;
+    var $171, $182;
 
-    $171 = $182 = $182_2 = null;
+    $171 = $182 = null;
     beforeEach(function() {
       waitsFor(function() {
         return require_contexts_loaded;
@@ -30,51 +30,67 @@ describe("getJQuery! loader plugin", function() {
       expect($171).toBeDefined();
       return expect($171.fn).toBeDefined();
     });
-    it("Local $182 should be defined", function() {
+    return it("Local $182 should be defined", function() {
       expect($182).toBeDefined();
       return expect($182.fn).toBeDefined();
     });
-    it("plugin171 should be undefined", function() {
-      return expect($171.fn["plugin171"]).toBeUndefined();
-    });
-    it("plugin182 should be undefined", function() {
-      return expect($171.fn["plugin182"]).toBeUndefined();
-    });
-    return it("pluginGlobal should be undefined", function() {
-      return expect($171.fn["pluginGlobal"]).toBeUndefined();
-    });
   });
-  return describe("For context1", function() {
-    var $171, $182, $182_2;
+  describe("For context1", function() {
+    var $171, $182;
 
-    $171 = $182 = $182_2 = null;
+    $171 = $182 = null;
     beforeEach(function() {
       waitsFor(function() {
         return require_contexts_loaded;
       });
       return runs(function() {
-        var mod, req;
+        var $182_2, mod, req;
 
         req = require.config({
           context: 'context1'
         });
-        mod = req('spec/fixtures/module_with_plugins');
+        mod = req('spec/fixtures/module');
         $171 = mod.jquery_171;
         $182 = mod.jquery_182;
         return $182_2 = mod.jquery_182_2;
       });
     });
-    it("plugin171 should be defined", function() {
-      return expect($171.fn["plugin171"]).toBeDefined();
+    it("Local $171 should be defined", function() {
+      expect($171).toBeDefined();
+      return expect($171.fn).toBeDefined();
     });
-    it("plugin182 should be undefined", function() {
-      return expect($171.fn["plugin182"]).toBeUndefined();
+    return it("Local $182 should be defined", function() {
+      expect($182).toBeDefined();
+      return expect($182.fn).toBeDefined();
     });
-    it("pluginGlobal should be undefined", function() {
-      return expect($171.fn["pluginGlobal"]).toBeUndefined();
+  });
+  return describe("For context2", function() {
+    var $171, $182;
+
+    $171 = $182 = null;
+    beforeEach(function() {
+      waitsFor(function() {
+        return require_contexts_loaded;
+      });
+      return runs(function() {
+        var $182_2, mod, req;
+
+        req = require.config({
+          context: 'context2'
+        });
+        mod = req('spec/fixtures/module');
+        $171 = mod.jquery_171;
+        $182 = mod.jquery_182;
+        return $182_2 = mod.jquery_182_2;
+      });
     });
-    return xit("widget should be undefined", function() {
-      return expect($171.widget).toBeUndefined();
+    it("Local $171 should be defined", function() {
+      expect($171).toBeDefined();
+      return expect($171.fn).toBeDefined();
+    });
+    return it("Local $182 should be defined", function() {
+      expect($182).toBeDefined();
+      return expect($182.fn).toBeDefined();
     });
   });
 });
