@@ -18,6 +18,14 @@ module.exports = (grunt) ->
 
     jasmine:
       src: 'spec/main.js'
+      options:
+        specs: 'spec/**/*_spec.js'
+        helpers: 'http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js'
+        template: require('grunt-template-jasmine-requirejs')
+        # templateOptions:
+        #   requireConfig:
+        #     baseUrl: "./"
+        #     urlArgs: "bust=#{(new Date().getTime())}"
 
     haml:
       options:

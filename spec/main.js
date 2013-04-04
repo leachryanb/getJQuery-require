@@ -1,48 +1,39 @@
-define([], function() {
-  var config1, config2, consoleReporter, htmlReporter, intrvl, jasmineEnv, l1, l2;
+var require_contexts_loaded;
 
-  jasmineEnv = jasmine.getEnv();
-  jasmineEnv.updateInterval = 1000;
-  htmlReporter = new jasmine.HtmlReporter();
-  consoleReporter = new jasmine.ConsoleReporter();
-  jasmineEnv.addReporter(htmlReporter);
-  jasmineEnv.addReporter(consoleReporter);
-  jasmineEnv.specFilter = function(spec) {
-    return htmlReporter.specFilter(spec);
+require_contexts_loaded = false;
+
+define([], function() {
+  var c1, c2, c_, context1, context2, context_, intrvl;
+
+  c_ = c1 = c2 = false;
+  context_ = {
+    baseUrl: './',
+    paths: {
+      "jquery-1.7.1": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min",
+      "jquery-1.8.2": "http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min",
+      "jquery-ui-1.9.0": "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js",
+      "jquery-ui-1.8.24": "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"
+    }
   };
-  config1 = $.extend(true, {}, require.s.contexts._.config, {
-    context: "context1",
-    config: {
-      "spec/tests1": {
-        name: "context1_a"
-      },
-      "spec/tests2": {
-        name: "context1_b"
-      }
-    }
+  context1 = {
+    context: "context1"
+  };
+  context2 = {
+    context: "context2"
+  };
+  require(context_, ["spec/fixtures/module"], function() {
+    return c_ = true;
   });
-  config2 = $.extend(true, {}, require.s.contexts._.config, {
-    context: "context2",
-    config: {
-      "spec/tests1": {
-        name: "context2_a"
-      },
-      "spec/tests2": {
-        name: "context2_b"
-      }
-    }
+  require(context1, ["spec/fixtures/module", "spec/fixtures/module_with_plugins"], function() {
+    return c1 = true;
   });
-  l1 = l2 = false;
-  require(config1, ["spec/tests1", "spec/tests2"], function() {
-    return l1 = true;
-  });
-  require(config2, ["spec/tests1", "spec/tests2"], function() {
-    return l2 = true;
+  require(context2, ["spec/fixtures/module", "spec/fixtures/module_with_plugins"], function() {
+    return c2 = true;
   });
   return intrvl = setInterval(function() {
-    if (l1 && l2) {
+    if (c_ && c1 && c2) {
       clearInterval(intrvl);
-      return jasmineEnv.execute();
+      return require_contexts_loaded = true;
     }
   }, 100);
 });

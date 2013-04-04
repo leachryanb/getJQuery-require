@@ -114,7 +114,6 @@ define [
         #   loadPlugins plugins, _$, req, onLoad
         # else
       _req [name], (the$)->
-        console.log req.defined(name)
         the$ = the$.sub() unless req.defined(name)
         # console.log config.context, the$.name
 

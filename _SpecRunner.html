@@ -4,21 +4,40 @@
   <meta charset="utf-8">
   <title>Jasmine Spec Runner</title>
 
-  <link rel="stylesheet" type="text/css" href=".grunt/grunt-contrib-jasmine/jasmine.css">
-
-
+  
   
   <script src="./.grunt/grunt-contrib-jasmine/jasmine.js"></script>
   
   <script src="./.grunt/grunt-contrib-jasmine/jasmine-html.js"></script>
   
-  <script src="./spec/main.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
   
-  <script src="./.grunt/grunt-contrib-jasmine/reporter.js"></script>
-  
-  <script src="./.grunt/grunt-contrib-jasmine/jasmine-helper.js"></script>
   
 
+  <script src=".grunt/grunt-contrib-jasmine/require.js"></script>
+  <script>
+    
+  </script>
+  
+  <link rel="stylesheet" type="text/css" href=".grunt/grunt-contrib-jasmine/jasmine.css">
+  
+  <script>
+    require([
+      
+      
+      
+        './spec/main' 
+        
+    ],
+    function(){
+      require(['./spec/load_different_versions_spec.js','./spec/plugin_isolation_spec.js','./.grunt/grunt-contrib-jasmine/reporter.js'], function(){
+        require(['./.grunt/grunt-contrib-jasmine/jasmine-helper.js'], function(){
+          // good to go! Our tests should already be running.
+        })
+      })
+    }
+    )
+  </script>
 </head>
 <body>
 </body>

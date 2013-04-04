@@ -147,7 +147,6 @@ define(['module'], function(module) {
           });
         }
         return _req([name], function(the$) {
-          console.log(req.defined(name));
           if (!req.defined(name)) {
             the$ = the$.sub();
           }
