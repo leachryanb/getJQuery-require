@@ -1,3 +1,6 @@
 .DS_Store
 .grunt
 node_modules
+ref_app/
+spec/
+_SpecRunner.html
