@@ -5,8 +5,8 @@ define ['./require_reset'], (resetter)->
   context_ =
     baseUrl: './'
     paths:
-      "jquery-1.7.1": "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min"
-      "jquery-1.8.2": "http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min"
+      'jquery-1.7.1': 'vendor/jquery-1.7.1'
+      'jquery-1.8.2': 'vendor/jquery-1.8.2'
 
   context1 = context: "context1"
   context2 = context: "context2"

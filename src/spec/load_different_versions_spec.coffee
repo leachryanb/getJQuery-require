@@ -25,11 +25,13 @@ define ['./load_different_versions'], (setup)->
 
       it 'Local $171 should be defined', ->
         expect($171).toBeDefined()
+        expect($171.fn.jquery).toBe '1.7.1'
         expect($171.fn).toBeDefined()
 
       it 'Local $182 should be defined', ->
         expect($182).toBeDefined()
         expect($182.fn).toBeDefined()
+        expect($182.fn.jquery).toBe '1.8.2'
 
     describe 'For context1', ->
       $171 = $182 = null
@@ -43,15 +45,16 @@ define ['./load_different_versions'], (setup)->
           mod = req 'spec/fixtures/module'
           $171 = mod.jquery_171
           $182 = mod.jquery_182
-          $182_2 = mod.jquery_182_2
 
       it 'Local $171 should be defined', ->
         expect($171).toBeDefined()
         expect($171.fn).toBeDefined()
+        expect($171.fn.jquery).toBe '1.7.1'
 
       it 'Local $182 should be defined', ->
         expect($182).toBeDefined()
         expect($182.fn).toBeDefined()
+        expect($182.fn.jquery).toBe '1.8.2'
 
     describe 'For context2', ->
       $171 = $182 = null
@@ -70,8 +73,10 @@ define ['./load_different_versions'], (setup)->
       it 'Local $171 should be defined', ->
         expect($171).toBeDefined()
         expect($171.fn).toBeDefined()
+        expect($171.fn.jquery).toBe '1.7.1'
 
       it 'Local $182 should be defined', ->
         expect($182).toBeDefined()
         expect($182.fn).toBeDefined()
+        expect($182.fn.jquery).toBe '1.8.2'
 

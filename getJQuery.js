@@ -39,6 +39,7 @@ define(['module'], function(module) {
 
     pluginRe = /\[([^\]]*)\]/;
     plugins = (pluginRe.exec(name) ? pluginRe.exec(name)[1].split(",") : []);
+    console.log(plugins);
     _results = [];
     for (_i = 0, _len = plugins.length; _i < _len; _i++) {
       plugin = plugins[_i];
@@ -101,7 +102,6 @@ define(['module'], function(module) {
           var match;
 
           match = __indexOf.call(plugins, contextPlugin) >= 0;
-          console.log(contextPlugin);
           if (match) {
             plugins.splice(plugins.indexOf(contextPlugin), 1);
           }
@@ -116,7 +116,7 @@ define(['module'], function(module) {
   };
   return {
     load: function(name, req, onLoad, config) {
-      var plugins, version, _ref, _req;
+      var plugins, the$, version, _ref, _req;
 
       plugins = parsePlugins(name);
       if (config.isBuild) {
@@ -131,6 +131,7 @@ define(['module'], function(module) {
       } else {
         version = parseVersion(name);
         name = "jquery-" + version;
+        the$ = window.$.fn.jquery === version ? window.$.sub() : void 0;
         if ((_ref = config.shim) == null) {
           config.shim = {};
         }
@@ -140,23 +141,24 @@ define(['module'], function(module) {
             return window.$.noConflict(true);
           }
         };
-        _req = requirejs(config);
-        if (masterConfig.jQueryContext) {
-          _req = requirejs({
-            context: masterConfig.jQueryContext,
-            shim: config.shim
+        _req = requirejs({
+          context: masterConfig.jQueryContext,
+          shim: config.shim
+        });
+        if (the$) {
+          return loadPlugins(plugins, the$, req, onLoad);
+        } else {
+          return _req([name], function(the$) {
+            if (!req.defined(name)) {
+              the$ = the$.sub();
+            }
+            if (plugins.length) {
+              return loadPlugins(plugins, the$, req, onLoad, config.context);
+            } else {
+              return onLoad(the$);
+            }
           });
         }
-        return _req([name], function(the$) {
-          if (!req.defined(name)) {
-            the$ = the$.sub();
-          }
-          if (plugins.length) {
-            return loadPlugins(plugins, the$, req, onLoad, config.context);
-          } else {
-            return onLoad(the$);
-          }
-        });
       }
     }
   };

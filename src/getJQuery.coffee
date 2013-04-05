@@ -29,6 +29,7 @@ define [
   parsePlugins = (name) ->
     pluginRe = /\[([^\]]*)\]/
     plugins = (if pluginRe.exec(name) then pluginRe.exec(name)[1].split(",") else [])
+    console.log plugins
     (plugin.trim() for plugin in plugins)
 
   parseVersion = (name) ->
@@ -67,7 +68,6 @@ define [
         _req = requirejs context: contextName
         _plugins = contextPlugins.filter((contextPlugin)->
           match = contextPlugin in plugins
-          console.log contextPlugin
           plugins.splice(plugins.indexOf(contextPlugin), 1) if match
           match
         )
@@ -92,34 +92,28 @@ define [
       version = parseVersion(name)
       name = "jquery-#{version}"
 
+      # If the window jQuery is the correct version, skip the request, just sub it
+      the$ = if window.$.fn.jquery is version then window.$.sub()
+
       config.shim ?= {}
       config.shim[name] =
         exports: '$'
         init: ->
           window.$.noConflict(true)
 
-      # try
-      #   # If the window jQuery is the correct version, skip the request, just sub it
-      #   _$ = if window.$.fn.jquery is version then window.$.noConflict(true).sub()
-      #   _$.fn.require_context = config.context
-      # catch ex
+      _req = requirejs
+        context: masterConfig.jQueryContext
+        shim: config.shim
 
+      if the$
+        loadPlugins plugins, the$, req, onLoad
+      else
+        _req [name], (the$)->
+          the$ = the$.sub() unless req.defined(name)
+          # console.log config.context, the$.name
 
-      _req = requirejs config
-      if masterConfig.jQueryContext
-        _req = requirejs
-          context: masterConfig.jQueryContext
-          shim: config.shim
-
-        # if _$
-        #   loadPlugins plugins, _$, req, onLoad
-        # else
-      _req [name], (the$)->
-        the$ = the$.sub() unless req.defined(name)
-        # console.log config.context, the$.name
-
-        if plugins.length
-          # pass in the original context require for the plugins
-          loadPlugins plugins, the$, req, onLoad, config.context
-        else
-          onLoad the$
+          if plugins.length
+            # pass in the original context require for the plugins
+            loadPlugins plugins, the$, req, onLoad, config.context
+          else
+            onLoad the$

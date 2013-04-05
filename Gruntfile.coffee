@@ -45,8 +45,8 @@ module.exports = (grunt) ->
 
     copy:
       files:
-        src: './getJQuery.js'
-        dest: '../Galileo/auth-platform/auth-platform-webapp/vendor/assets/javascripts/modules/getJQuery.js'
+        src: './src/getJQuery.coffee'
+        dest: '../Galileo/auth-platform/auth-platform-webapp/vendor/assets/javascripts/modules/getJQuery.js.coffee'
 
     watch:
       app:
