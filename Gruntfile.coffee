@@ -13,7 +13,7 @@ module.exports = (grunt) ->
       ref_app:
         options:
           keepalive: true
-          port: 9000
+          port: 9001
           base: 'ref_app'
 
     jasmine:
@@ -66,4 +66,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'compile', ['clean', 'coffee', 'haml', 'jasmine::build']
   grunt.registerTask 'test', ['compile','jasmine']
+  grunt.registerTask 'server', ['connect:test']
   grunt.registerTask 'default', ['test']
